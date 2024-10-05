@@ -2,7 +2,7 @@
 # PLEASE UPDATE THIS FILE.
 # Dijkstra's maze solver.
 #
-# __author__ =  <Your Name>
+# __author__ =  Devika Sheeja
 # __copyright__ = 'Copyright 2024, RMIT University'
 # -------------------------------------------------------------------
 
