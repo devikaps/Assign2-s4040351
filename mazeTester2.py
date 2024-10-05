@@ -61,13 +61,13 @@ if __name__ == '__main__':
 		usage()
 
 
-	# open configuration file		
+	# open configuration file
 	fileName: str = args[1]
 	with open(fileName,"r") as configFile:
 		# use json parser
 		configDict = json.load(configFile)
 
-		
+
 		# Assign to variables storing various parameters.
 		rowNum: int = configDict['rowNum']
 		colNum: int = configDict['colNum']
@@ -76,18 +76,18 @@ if __name__ == '__main__':
 		entrances: List[List[int]] = configDict['entrances']
 		# set of exits
 		exits: List[List[int]] = configDict['exits']
-		# generator approach to use 
+		# generator approach to use
 		genApproach: str = configDict['generator']
-		# solver approach to use 
+		# solver approach to use
 		solverApproach: str = configDict['solver']
-		# Optional: The index of which entrance to use (start at index 0) 
+		# Optional: The index of which entrance to use (start at index 0)
 		solverEntIndex = None
 		if 'solverEntranceIndex' in configDict.keys():
 			solverEntIndex: int = configDict['solverEntranceIndex']
-			multiPath  = False	
-		else: 
+			multiPath  = False
+		else:
 			allPairStrategy = configDict['strategy']
-			multiPath  = True	
+			multiPath  = True
 		# whether to visualise the generated maze and solving solution or not
 		bVisualise: bool = configDict['visualise']
 		# Optional: Filename to store visualisation output
@@ -100,15 +100,15 @@ if __name__ == '__main__':
 			randSeed = configDict['randSeed']
 
 
-		# initialise the random seed generator 
+		# initialise the random seed generator
 		if randSeed != None:
 			random.seed(randSeed)
 
 
 		# Initialise maze object
-		
+
 		maze: Maze = Maze(rowNum, colNum, wtApproach)
-	
+
 
 		# add the entraces and exits
 		for [r,c] in entrances:
@@ -116,23 +116,23 @@ if __name__ == '__main__':
 		for [r,c] in exits:
 			maze.addExit(Coordinates(r, c))
 
-		
+
 
 		# Generate maze
-	
+
 		generator = MazeGenerator(genApproach)
 		# timer for generation
 		startGenTime : float = time.perf_counter()
 		generator.generateMaze(maze)
-		
-		
+
+
 		# stop timer
 		endGenTime: float = time.perf_counter()
 
 		print(f'Generation took {endGenTime - startGenTime:0.4f} seconds')
 
 
-	
+
 		mazeEntrances: List[Coordinates]  = maze.getEntrances()
 		mazeExits: List[Coordinates]  = maze.getExits()
 
@@ -142,13 +142,13 @@ if __name__ == '__main__':
 			usage()
 
 		if generator.isMazeGenerated():
-			
+
 			# time for solving
 			startSolveTime : float = time.perf_counter()
 
 			# Task B mode, where we specify the entrance
 			if solverEntIndex is not None:
-				
+
 				# Solve maze
 				solver = MazeSolver(solverApproach)
 				solver.solveMaze(maze, mazeEntrances[solverEntIndex])
@@ -159,9 +159,9 @@ if __name__ == '__main__':
 					usage()
 
 				else:
-					solver = AllPairsSolver(allPairStrategy) 
+					solver = AllPairsSolver(allPairStrategy)
 					solver.solveMaze(maze, mazeEntrances, mazeExits)
-			
+
 		 	# stop timer
 			endSolveTime: float = time.perf_counter()
 
@@ -172,14 +172,14 @@ if __name__ == '__main__':
 
 		print ("getting to visualisation!", canVisualise)
 		# # Display maze.
-	
+
 		if bVisualise and canVisualise and generator.isMazeGenerated():
 			cellSize = 1
-			visualiser = Visualizer(maze, solver, multiPath, cellSize) 
-	
+			visualiser = Visualizer(maze, solver, multiPath, cellSize)
+
 			if outFilename:
 				visualiser.show_maze(outFilename)
 			else:
 				visualiser.show_maze()
-					
-				
+
+

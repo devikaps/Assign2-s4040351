@@ -73,9 +73,13 @@ class MazeSolver:
         """
         return self.m_solver.m_exitUsed 
 
-    def getSolverPath(self)->Coordinates:
+    def getSolverPath(self)->List[Coordinates]:
         """
-        @return Return the exit used in the solution.  Should only be called after a solution is found.
+        Returns the list of Coordinates representing the path 
+        determined by the solver from the entrance to the exit of the maze.
+
+        @return: A list of Coordinates from entrance to exit, 
+             in the order of traversal.
         """
         return self.m_solver.m_solverPath    
 	
