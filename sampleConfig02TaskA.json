@@ -6,7 +6,7 @@
     "exits": [[9,-1]],
     "generator": "kruskal",
     "solver": "recur",
-    "solverEntranceIndex": 1,
+    "solverEntranceIndex": 0,
     "visualise": true,
     "fileOutput": "sampleTaskA-2.png"
 }
