@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------
 # DON'T CHANGE THIS FILE.
 # This is used for Task B and Task C
-# 
+#
 # __author__ = 'Elham Naghizade'
 # __copyright__ = 'Copyright 2024, RMIT University'
 # -------------------------------------------------------------------
@@ -19,13 +19,13 @@ class AllPairsSolver():
     def __init__(self, strategy:str):
         self.all_solved = False
         self.entrance_exit_paths = {}
-        
+
         if strategy == 'brute-force':
             self.m_solver = bruteForceSolver()
         elif strategy == 'greedy':
             self.m_solver = greedySolver()
 
-    
+
     def solveMaze(self, maze: Maze, entrances: List[Coordinates], exits: List[Coordinates]):
         """
         Solve the maze to find all paths between each pair of entrance and exits using backtracking.
@@ -44,14 +44,14 @@ class AllPairsSolver():
         """
         Use after solveMaze(maze), counting the number of cells explored in solving process.
 	    @return The number of cells explored.
-	    It is not required to be accurate and no marks are given (or lost) on it. 
+	    It is not required to be accurate and no marks are given (or lost) on it.
         """
         return self.m_solver.cellsExplored
 
 
     def getSolverPath(self) -> dict:
         """
-        Use after solveMaze(maze), 
+        Use after solveMaze(maze),
 	    @return the (ent,exit):path pairs where path is a list of Coordinates
         """
         if self.all_solved:
@@ -61,4 +61,3 @@ class AllPairsSolver():
 
 
 
-        

@@ -8,6 +8,8 @@
 
 from maze.util import Coordinates
 from maze.maze import Maze
+from student.lib import Node
+from student.lib import manhattanHeuristics
 import heapq
 
 class DijkstraSolver():
@@ -22,27 +24,29 @@ class DijkstraSolver():
     Logic in Short
     -------------------------
         Start processing from entrance node (Step 1 to 3)
-        Process each nodes from frontier (Step 4, 5)
+        Process each nodes from node_queue (Step 4, 5)
         Return once the exit is found (Step 6)
         Explore the child nodes until exit is found (Step 7-8)
 
     Pseudocode
     -----------
         Step 1: solver_path <- Node(vertices)
-        Step 2: frontier <- priority queue
+        Step 2: node_queue <- priority queue
         Step 3: visited <- visited nodes
-
-        Step 4: while NOT_EMPTY(frontier) do
-        Step 5:     node <- POP(frontier)
-
+        Step 4: while NOT_EMPTY(node_queue) do
+        Step 5:     node <- POP(node_queue)
         Step 6:     if exist found: then populate the path and return result
-
         Step 7:     for each child in Expand(node) do
         Step 8:         child <- child_node
         Step 9:         if child not in visited and child.path_cost < old_path_cost:
         Step 10:         set visited[s].path_cost = child.path_cost
-        Step 11:         add child to frontier and update with new parent if exists
+        Step 11:         add child to node_queue for re-processing
 
+    Datastructures Used:
+        - min-heap
+
+    Time complexity:
+        E(log V) -> for V - vertices & E - Edges
 
     """
     def __init__(self):
@@ -52,35 +56,18 @@ class DijkstraSolver():
         self.m_exitUsed = None
         self.m_solverPath: List[Coordinates] = list()
 
-    def manhattanHeuristics(self, xy1:Coordinates, xy2:Coordinates):
-        "Returns the Manhattan distance between points xy1 and xy2"
-        return abs(xy1.getRow() - xy2.getRow()) + abs(xy1.getCol() - xy2.getCol())
-
-    class Node:
-        """Node Object defining a node with its distance from starting point"""
-        def __init__(self, node, distance, parent=None):
-            self.node = node
-            self.distance = distance
-            self.parent = parent
-
-        def __lt__(self, node):
-            return self.distance < node.distance
-
-
     def solveMaze(self, maze: Maze, entrance: Coordinates):
         """Implementing Dijakshara Algorithm"""
         # TODO: Implement this for task A!
 
-        frontier = list()
-        heapq.heapify(frontier)
-        heapq.heappush(frontier, self.Node(entrance, 0))
+        node_queue = list()
+        heapq.heapify(node_queue)                                 # use Heap to implement Priority Queue
+        heapq.heappush(node_queue, Node(entrance, 0))             # push Entrance to the the queue
 
-        visited = dict()
-        while frontier: # Step 4
-            # Pop the next nearest node (node with shortest distance) and update visited list
-            nearest =  heapq.heappop(frontier)
-            visited.update({nearest.node : nearest})
-            self.m_cellsExplored += 1
+        visited = dict()                                          # set visited nodes as Empty
+        while node_queue:                                         # Step 4
+            nearest =  heapq.heappop(node_queue)                  # Pop the next nearest node (node with shortest distance) and update visited list
+            visited.update({nearest.node : nearest})              # add the processing node to visited list
 
             # When the current processing node is the exit
             # Update solver path and reutn
@@ -95,15 +82,11 @@ class DijkstraSolver():
                 self.m_exitUsed = nearest.node
                 return
 
-            # Explore the neighbors
-            neighbours = maze.neighbours(nearest.node)
-
+            self.m_cellsExplored += 1                             # increment explored nodes count
+            neighbours = maze.neighbours(nearest.node)            # Explore the neighbors
             nonVisitedNeighs = [neigh for neigh in neighbours if not maze.hasWall(nearest.node, neigh)]
 
-            for neigh in nonVisitedNeighs:
-                neigh_distance = nearest.distance + self.manhattanHeuristics(neigh, nearest.node)
-
-                if (neigh not in visited or neigh_distance < visited[neigh].distance):
-                    heapq.heappush(frontier, self.Node(neigh, neigh_distance, nearest.node))
-                    if neigh in visited:
-                        visited[neigh] = self.Node(neigh, neigh_distance,nearest.node)
+            for neigh in nonVisitedNeighs:                                                      # process all edges that are not walls
+                neigh_distance = nearest.distance + manhattanHeuristics(neigh, nearest.node)    # (ditance to neighbor + the parents distance from starting node)
+                if (neigh not in visited or neigh_distance < visited[neigh].distance):          # If not visited or with a new shorted distance
+                    heapq.heappush(node_queue, Node(neigh, neigh_distance, nearest.node))       # add it to queue for (re-)processng

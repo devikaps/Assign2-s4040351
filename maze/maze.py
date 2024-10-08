@@ -1,6 +1,6 @@
 # -------------------------------------------------
 # DON'T CHANGE THIS FILE.
-# Base class for maze implementations. 
+# Base class for maze implementations.
 #
 # __author__ = 'Elham Naghizade'
 # __copyright__ = 'Copyright 2024, RMIT University'
@@ -33,7 +33,7 @@ class Maze:
         # entrances and exits
         self.m_entrance = list()
         self.m_exit = list()
-        self.m_graph = EdgeListGraph() 
+        self.m_graph = EdgeListGraph()
 
         # Store coordinates for reuse
         self.m_cells = {}
@@ -43,36 +43,36 @@ class Maze:
 
     def initCells(self,  addWallFlag:bool = True, wt: str = "unWeighted" ):
         """
-        Initialises the cells in the maze. 
+        Initialises the cells in the maze.
         Override to customise behaviour.
 
         @param addWallFlag: Whether we should also add the walls between cells.  Default is True.
         """
-        
+
 
         # add the vertices and edges to the graph
         # Add vertices and initialize Coordinates with weights
         for r in range(self.m_rowNum):
             for c in range(self.m_colNum):
                 coord = Coordinates(r, c, wt)
-                self.m_cells[(r, c)] = coord  
+                self.m_cells[(r, c)] = coord
                 self.m_graph.addVertex(coord)
 
 
         # add boundary vertices and store them in cells; the weights are assigned to 0
-        
+
         for c in range(self.m_colNum):
             # Top and bottom boundaries (row -1 and row m_rowNum)
-            top_boundary = Coordinates(-1, c)  
-            bottom_boundary = Coordinates(self.m_rowNum, c)  
+            top_boundary = Coordinates(-1, c)
+            bottom_boundary = Coordinates(self.m_rowNum, c)
             self.m_cells[(-1, c)] = top_boundary
             self.m_cells[(self.m_rowNum, c)] = bottom_boundary
             self.m_graph.addVertices([top_boundary, bottom_boundary])
 
         for r in range(self.m_rowNum):
             # Left and right boundaries (col -1 and col m_colNum)
-            left_boundary = Coordinates(r, -1)  
-            right_boundary = Coordinates(r, self.m_colNum)  
+            left_boundary = Coordinates(r, -1)
+            right_boundary = Coordinates(r, self.m_colNum)
             self.m_cells[(r, -1)] = left_boundary
             self.m_cells[(r, self.m_colNum)] = right_boundary
             self.m_graph.addVertices([left_boundary, right_boundary])
@@ -84,7 +84,7 @@ class Maze:
                 cell1 = self.m_cells[(row, col)]
                 cell2 = self.m_cells[(row, col + 1)]
                 self.m_graph.addEdge(cell1, cell2, addWallFlag)
-        
+
         # Scan columns now
         for col in range(0, self.m_colNum):
             for row in range(-1, self.m_rowNum):
@@ -92,7 +92,7 @@ class Maze:
                 cell1 = self.m_cells[(row, col)]
                 cell2 = self.m_cells[(row + 1, col)]
                 self.m_graph.addEdge(cell1, cell2, addWallFlag)
-        
+
 
 
     def addWall(self, cell1:Coordinates, cell2:Coordinates)->bool:
@@ -113,10 +113,10 @@ class Maze:
         if self.m_graph.hasEdge(cell1, cell2):
             self.m_graph.updateWall(cell1, cell2, True)
             return True
-        
+
         # in all other cases, we return False
         return False
-    
+
 
     def removeWall(self, cell1:Coordinates, cell2:Coordinates)->bool:
         """
@@ -137,10 +137,10 @@ class Maze:
         if self.m_graph.hasEdge(cell1, cell2):
             self.m_graph.updateWall(cell1, cell2, False)
             return True
-        
+
         # in all other cases, we return False
         return False
-    
+
 
     def allWalls(self):
         """
@@ -156,18 +156,18 @@ class Maze:
 
                 self.addWall(cell1, cell2)
                 self.addWall(cell1, cell3)
-                
+
         # add the wall along the right maze boundary, and top maze boundary
         for r in range(0,self.m_rowNum):
-            cell1 = self.m_cells[(r, self.m_colNum-1)] 
-            cell2 = self.m_cells[(r, self.m_colNum)] 
+            cell1 = self.m_cells[(r, self.m_colNum-1)]
+            cell2 = self.m_cells[(r, self.m_colNum)]
             self.addWall(cell1, cell2)
 
         for c in range(0,self.m_colNum):
-            cell1 = self.m_cells[(self.m_rowNum-1, c)] 
-            cell2 = self.m_cells[(self.m_rowNum, c)] 
+            cell1 = self.m_cells[(self.m_rowNum-1, c)]
+            cell2 = self.m_cells[(self.m_rowNum, c)]
             self.addWall(cell1, cell2)
-       
+
 
 
     def hasWall(self, cell1:Coordinates, cell2:Coordinates)->bool:
@@ -179,7 +179,7 @@ class Maze:
 
         """
         return self.m_graph.getWallStatus(cell1, cell2)
-    
+
     def hasEdge(self, cell1:Coordinates, cell2:Coordinates)->bool:
         """
         Checks if there is an edge between cell1 and cell2.
@@ -197,7 +197,7 @@ class Maze:
 
     def edgeWeight(self, cell1:Coordinates, cell2:Coordinates)->int:
         """
-        Returns the weight of the edge between two cells in the maze, 
+        Returns the weight of the edge between two cells in the maze,
         calculated as the absolute difference in their weights.
 
         If there is no edge between the two cells, returns -1.
@@ -206,19 +206,19 @@ class Maze:
         @param cell2: The second cell (vertex) in the graph.
         @return: The absolute difference in weight between the two cells if an edge exists, or -1 otherwise.
         """
-        
+
         if self.m_graph.hasEdge(cell1, cell2):
             return abs(cell1.getWeight()- cell2.getWeight())
         else:
             return -1
-        
+
     def getVetrices(self)->List[Coordinates]:
         """
         Retrieves all vertices (cells) in the maze graph.
 
         @return: A list of all the vertex coordinates in the maze graph.
         """
-        return self.m_graph.vertices  
+        return self.m_graph.vertices
 
     def getEdges(self)->List[Coordinates]:
         """
@@ -226,8 +226,8 @@ class Maze:
 
         @return: A list of tuples representing edges.
         """
-        return self.m_graph.edges  
-    
+        return self.m_graph.edges
+
     def getCoords(self)->List[Coordinates]:
         """
         Retrieves all coordinates (including their weight) from the maze.
@@ -236,7 +236,7 @@ class Maze:
         """
         return list(self.m_cells.values())
 
-    
+
 
     def addEntrance(self, cell: Coordinates)->bool:
         """
@@ -253,7 +253,7 @@ class Maze:
             or (cell.getRow() == self.m_rowNum and cell.getCol() >= 0 and cell.getCol() < self.m_colNum) \
             or (cell.getCol() == -1 and cell.getRow() >= 0 and cell.getRow() < self.m_rowNum) \
             or (cell.getCol() == self.m_colNum and cell.getRow() >= 0 and cell.getRow() < self.m_rowNum):
-            
+
             self.m_entrance.append(cell)
 
             # entrance is at bottom, need to remove wall in "up" direction
@@ -295,7 +295,7 @@ class Maze:
             or (cell.getRow() == self.m_rowNum and cell.getCol() >= 0 and cell.getCol() < self.m_colNum) \
             or (cell.getCol() == -1 and cell.getRow() >= 0 and cell.getRow() < self.m_rowNum) \
             or (cell.getCol() == self.m_colNum and cell.getRow() >= 0 and cell.getRow() < self.m_rowNum):
-            
+
             self.m_exit.append(cell)
 
             # entrance is at bottom, need to remove wall in "up" direction
@@ -319,16 +319,16 @@ class Maze:
         else:
             # not on boundary
             return False
-        
-    
-        
+
+
+
 
     def getEntrances(self)->List[Coordinates]:
         """
         @returns list of entrances that the maze has.
         """
         return self.m_entrance
-    
+
 
 
     def getExits(self)->List[Coordinates]:
@@ -358,9 +358,9 @@ class Maze:
     def checkCoordinates(self, coord:Coordinates)->bool:
         """
         Checks if the coordinates is a valid one.
-        
+
         @param coord: Cell/coordinate to check if it is a valid one.
-        
+
         @returns True if coord/cell is valid, otherwise False.
         """
 

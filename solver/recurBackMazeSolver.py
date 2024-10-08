@@ -16,26 +16,26 @@ class RecurBackMazeSolver():
 
 
     def __init__(self):
-        
+
         # self.m_solverPath: Set of cells that the solver visited.  This does include backtracking.
         self.m_solverPath: List[Coordinates] = list()
         # self.m_cellsExplored: Number of cells explored during the solving process.  Does not include backtracking.
-        self.m_cellsExplored = 0 
+        self.m_cellsExplored = 0
         # self.m_entranceUsed: Entrance used to enter maze by the solver.
         self.m_entranceUsed = None
         # self.m_exitUsed: Exit found and used by maze solver as the exit.
         self.m_exitUsed = None
 
- 
+
     def solveMaze(self, maze: Maze, entrance: Coordinates):
 
         visited = set()  # Set to track visited nodes
         stack   = [entrance]  # populate the stack with the entrance node
         exits   = maze.getExits()
-        
+
         predecessors: dict[Coordinates, Coordinates] = {}
         self.m_cellsExplored += 1
-        
+
         while stack:
             currCell = stack.pop()
             if currCell in exits:
@@ -58,8 +58,3 @@ class RecurBackMazeSolver():
                 for neigh in nonVisitedNeighs:
                     stack.append(neigh)
                     predecessors[neigh] = currCell
-
-
-
-
- 

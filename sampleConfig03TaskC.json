@@ -5,8 +5,8 @@
     "entrances": [[0,-1], [6,-1]],
     "exits": [[-1, 6], [10,5]],
     "generator": "kruskal",
-    "solver": "recur",
-    "strategy": "brute-force",
+    "solver": "dijkstra",
+    "strategy": "greedy",
     "visualise": true,
-    "fileOutput": "testTaskB.png"
+    "fileOutput": "testTaskC.png"
 }
