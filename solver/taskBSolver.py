@@ -29,14 +29,16 @@ class bruteForceSolver():
         Steo 2: fetch and find a path from the entrance and exit index 1
         Step 3: return all_solved flag as true if the second path also exits
         """
+        try:
+            entrance_index = 0
+            self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, [], entrance_index)})
 
-        entrance_index = 0
-        self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, [], entrance_index)})
-
-        if self.entrance_exit_paths:
-            entrance_index += 1
-            self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, self.entrance_exit_paths[0], entrance_index)})
-            self.all_solved = len(self.entrance_exit_paths[entrance_index]) > 1
+            if self.entrance_exit_paths:
+                entrance_index += 1
+                self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, self.entrance_exit_paths[0], entrance_index)})
+                self.all_solved = len(self.entrance_exit_paths[entrance_index]) > 1
+        except Exception:
+            print("Invalid input configuration. No paths generated!")
 
     def getSolverPath(self) -> dict:
         return self.entrance_exit_paths

@@ -31,13 +31,16 @@ class greedySolver():
         Step 3: return all_solved flag as true if the second path also exits
         """
         # TODO: Implement this for task C!
-        entrance_index = 0
-        self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, [], entrance_index)})
+        try:
+            entrance_index = 0
+            self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, [], entrance_index)})
 
-        if self.entrance_exit_paths:
-            entrance_index += 1
-            self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, self.entrance_exit_paths[0], entrance_index)})
-            self.all_solved = len(self.entrance_exit_paths[entrance_index]) > 1
+            if self.entrance_exit_paths:
+                entrance_index += 1
+                self.entrance_exit_paths.update({entrance_index: self.findPath(maze, entrances, exits, self.entrance_exit_paths[0], entrance_index)})
+                self.all_solved = len(self.entrance_exit_paths[entrance_index]) > 1
+        except Exception:
+            print("Invalid Input Configuration. No paths generated!")
 
     def getSolverPath(self) -> dict:
         return self.entrance_exit_paths
