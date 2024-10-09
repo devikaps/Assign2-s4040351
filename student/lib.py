@@ -18,7 +18,7 @@ def build_wall_heap(maze: Maze) ->list():
 
     # parse all edges that has wall and not a boundary to process
     for edge in maze.getEdges():
-        if maze.hasWall(edge[0], edge[1]) and not is_boundary(edge[0], maze) and not is_boundary(edge[1], maze):
+        if edge[2] and not is_boundary(edge[0], maze) and not is_boundary(edge[1], maze):
             distance = maze.edgeWeight(edge[0],edge[1])
             node = Edge(edge,distance)
             heapq.heappush(edges, node)

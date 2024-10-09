@@ -1,0 +1,12 @@
+{
+    "rowNum": 10,
+    "colNum": 10,
+    "weight": "checkered",
+    "entrances": [[4,-1],[10, 6]],
+    "exits": [[5, 10], [8,10]],
+    "generator": "kruskal",
+    "solver": "recur",
+    "strategy": "brute-force",
+    "visualise": true,
+    "fileOutput": "NonOverlappingTaskB.png"
+}
