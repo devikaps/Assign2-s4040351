@@ -9,9 +9,8 @@
 from random import choice
 from maze.maze import Maze
 from maze.util import Coordinates
-from student.lib import build_wall_heap
-from student.lib import UnionFind
-import heapq
+from generator.lib import get_walls
+from generator.lib import UnionFind
 
 class KruskalMazeGenerator():
     """
@@ -22,23 +21,22 @@ class KruskalMazeGenerator():
     # Defined two classes
     #     - UnionFind() - implements union-find datastructure
     #     - Edge()  - to represent a node in the min-span-tree heap
-    #     - build_wall_heap - to keep the walls and its weight in heap
-    #                         as heap serves the purpose of retrieving the smallest wall
+    #     - build_wall - to keep the walls and its weight in heap
+    #                    as heap serves the purpose of retrieving the smallest wall
 
     def generateMaze(self, maze:Maze):
         """
         Kruskal algorithm works by picking the shortest spanning tree.
 
         PseudoCode:
-            1. Fetch the max iterations (No.Of vertieces-1)
+            1. Fetch the walls and sort it based on the edge weight
             2. Keep the edges in a heapq. This will help in reducing th complexity.
             3. for each wall.
             4.     fetch the wall with lowest cost towards entrance.
             5.     add to the spanning tree to find out if no cycle forms.
-            6.     remove the wall
+            6.     remove the wall when the union function returns true (when no cycle is formed with this merge)
 
         Datastructures Used:
-            - min-heap
             - union-find
 
         Time complexity:
@@ -46,15 +44,12 @@ class KruskalMazeGenerator():
 
         """
         # TODO: Implement this method for task A.
-
-        total_vertices = len(maze.getCoords())          # step 1: Fetch the max iterations (No.Of vertieces-1)
         min_span_tree = list()
-        walls = build_wall_heap(maze)                   # step 2: Keep the edges in a heapq with entrances
+        walls = get_walls(maze)                        # step 2: fetch the sorted walls with their weights
 
         unionFind = UnionFind(maze.getCoords())
-        while len(min_span_tree) < total_vertices - 1 and walls:
-            curr_wall = heapq.heappop(walls)            # step 4: fetch the wall with lowest cost towards entrance.
-            selected_wall = curr_wall.node
+        for curr_wall in walls:
+            selected_wall = curr_wall[0]
             vertex1 = selected_wall[0]
             vertex2 = selected_wall[1]
 

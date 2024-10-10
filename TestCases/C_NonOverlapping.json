@@ -2,11 +2,11 @@
     "rowNum": 10,
     "colNum": 10,
     "weight": "checkered",
-    "entrances": [[-1,0], [-1,5]],
-    "exits": [[8, 10], [5,10]],
+    "entrances": [[4,-1],[10, 6]],
+    "exits": [[5, 10], [8,10]],
     "generator": "kruskal",
-    "solver": "recur",
+    "solver": "dijkstra",
     "strategy": "greedy",
     "visualise": true,
-    "fileOutput": "OverlappingTaskC.png"
+    "fileOutput": "Output/C_NonOverlapping.png"
 }

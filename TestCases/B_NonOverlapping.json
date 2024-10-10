@@ -5,8 +5,8 @@
     "entrances": [[4,-1],[10, 6]],
     "exits": [[5, 10], [8,10]],
     "generator": "kruskal",
-    "solver": "recur",
-    "strategy": "greedy",
+    "solver": "dijkstra",
+    "strategy": "brute-force",
     "visualise": true,
-    "fileOutput": "NonOverlappingTaskC.png"
+    "fileOutput": "Output/B_NonOverlapping.png"
 }

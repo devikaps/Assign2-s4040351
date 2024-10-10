@@ -1,0 +1,13 @@
+{
+    "rowNum": 10,
+    "colNum": 10,
+    "weight": "checkered",
+    "entrances": [[4,-1],[10, 6]],
+    "exits": [[-1,0],[-1,2],[-1,6],[-1,9]],
+    "generator": "kruskal",
+    "solver": "dijkstra",
+    "solverEntranceIndex": 1,
+    "visualise": true,
+    "mazeFromFile": false,
+    "fileOutput": "Output/A_MultipleExits.png"
+}
