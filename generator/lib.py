@@ -30,7 +30,7 @@ class UnionFind():
     def __init__(self, vertices: Coordinates) -> None:
         """Step 1:"""
         self.parent = dict()
-        for vertex in vertices:                 # set vertex as its own parent node
+        for vertex in vertices:                 # set all vertices as its own parent
             self.parent.update({vertex: vertex})
 
 
@@ -62,9 +62,9 @@ def is_boundary(cell:Coordinates, maze:Maze):
 def get_walls(maze: Maze) ->list():
     """Building heap with edges and their weights"""
     edges = list()
-    for edge in maze.getEdges():                    # parse all edges that has wall and not a boundary to process
+    for edge in maze.getEdges():                    # parse all edges and fetch all that has wall and not a boundary
         if edge[2] and not is_boundary(edge[0], maze) and not is_boundary(edge[1], maze):
-            edges.append((edge, maze.edgeWeight(edge[0],edge[1])))
+            edges.append((edge, maze.edgeWeight(edge[0],edge[1]))) # tuple: (edge, edge.weight)
 
     edges = sorted(edges, key = lambda x:x[1])      # sort edges using weight the second index value in the tuple
     return edges

@@ -17,13 +17,12 @@ import heapq
 
 class Node:
     """Node Object defining a node with its distance from starting point"""
-    def __init__(self, node, distance, parent=None, path=[]):
-        self.node = node
-        self.distance = distance
-        self.parent = parent
-        self.path = path
+    def __init__(self, node, distance, path=[]):
+        self.node = node            # co-ordinates of the node
+        self.distance = distance    # total distance to this node
+        self.path = path            # path to this node
 
-    def __lt__(self, node):
+    def __lt__(self, node):         # overwriting the less-than method for this class
         return self.distance < node.distance
 
 
@@ -51,18 +50,18 @@ class greedySolver():
                     exclude_paths.extend(path_found)
 
             self.all_solved = (len(self.entrance_exit_paths) == len(entrances))
-        except ValueError:
-            print("Invalid Input Configuration. No paths generated!")
+        except Exception as e:
+            print("Invalid Input Configuration. No paths generated!", str(e))
 
     def getSolverPath(self) -> dict:
         return self.entrance_exit_paths
 
     def findPath(self, maze: Maze, entrance: Coordinates, exit: Coordinates, exclude_path: List[Coordinates]):
-        """This function implements the greedy algorithm dijkshara
+        """This function implements the greedy algorithm Dijkstra
 
         Pseudocode
         ----------
-        /*Dijkshara Algorithm to find shorted path from an entrance point to exit point
+        /*Dijkstra Algorithm to find shorted path from an entrance point to exit point
           Input:
                 maze - Class that provides the maze related details, including edge, edge-weight, walls, etc
                 entrances - an array where the entrances are provided
@@ -76,16 +75,16 @@ class greedySolver():
 
         Steps:
         ------
-        1. Initialize Priority Queue N = [ENTRANCES[ENTRANCE_INDEX]]
+        1. Initialize Priority Queue N = (ENTRANCES, 0, [ENTRANCE])
         2. Set V = EMPTY_LIST
         3. while N not EMPTY do
         4.      set NODE = N.pop()   > get the shortest path node
         5.      V.PUSH(NODE)         > update visited nodes
-        6.      if NODE == EXIT[INDEX] then
-        7.          set solved path by traversing V
-        8.          return SOLVED_PATH
-        9.      find nearest non-visited, not to be excluded NEIGHBOUR(s)
-        10.     N.push(NEIGHBOUR)
+        6.      if NODE == EXIT then return NODE.path
+        7.      find selected non-visited, not to be excluded NEIGHBOUR(s)
+        8.        distance = NEIGHBOUR.distance + HEURISTICS(NEIGHBOUR, EXIT)
+        9.        if not visited(NEIGHBOUR) or visited.distance > distance
+        10.          N.push(NEIGHBOUR, distance, PATH(NEIGHBOUR))
         11. end while
         12. return EMPTY_LIST
 
@@ -93,40 +92,34 @@ class greedySolver():
             - min-heap
 
         Time complexity:
-            E(log V) -> for V - vertices & E - Edges
+            The worst case scenario where there are no paths
+            O(n) = E(log V) => V:vertices, E:Edges
 
         """
         node_queue = list()                                   # use heap to implement priority Queue
         heapq.heapify(node_queue)
-        heapq.heappush(node_queue, Node(entrance, 0)) # initialize heap with first node as entrance at index
+        heapq.heappush(node_queue, Node(entrance, 0, [entrance])) # initialize heap with first node as entrance at index
 
         visited = dict()
         while node_queue:
-            nearest =  heapq.heappop(node_queue)             # fetch the node with shortest distance
-            visited.update({nearest.node : nearest})         # Add this nearest node to visited list
+            selected =  heapq.heappop(node_queue)             # fetch the node with shortest distance
+            visited.update({selected.node : selected})        # Add this selected node to visited list
 
-            if nearest.node == exit:                         # check if this is the exit
-                path = nearest.node                          # set path to node
-                m_solverPath = list()                        # initialize sovler path
-                while path:                                  # loop until no path node found
-                    m_solverPath.append(path)                # append current valid path to solved path list
-                    path = visited[path].parent              # point "path" to current node's parent
-                m_solverPath.reverse()                       # reverse the list as we added the path frome exit to entrance
-                return m_solverPath                          # return True if the path length is greater than 1
+            if selected.node == exit:                         # check if this is the exit
+                return selected.path                          # return True if the path length is greater than 1
 
+            nonVisitedNeighs = [neigh for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh) and neigh not in exclude_path]
 
-            neighbours = maze.neighbours(nearest.node)       # Find non visited and non overlapping neighbours
-            nonVisitedNeighs = [neigh for neigh in neighbours if not maze.hasWall(nearest.node, neigh) and neigh not in exclude_path]
+            for neigh in nonVisitedNeighs:                    # explore all paths that are not in exclusion list and is not a wall
+                neigh_distance = selected.distance + self.manhattanHeuristics(exit, selected.node) # get manhattan distance from selected to exit
 
-            for neigh in nonVisitedNeighs:
-                neigh_distance = nearest.distance + self.manhattanHeuristics(exit, nearest.node) # get manhattan distance from selected to exit
-
-                if (neigh not in visited or neigh_distance < visited[neigh].distance):       # the new neighbor was not visited or has a new shorted distance
-                    heapq.heappush(node_queue, Node(neigh, neigh_distance, nearest.node))    # add the new neighbor to heap with new parent and distance
+                if (neigh not in visited or neigh_distance < visited[neigh].distance): # the new neighbor was not visited or has a new shorted distance
+                    neigh_path = [neigh]
+                    neigh_path.extend(selected.path)                                    # find the path towards this neighbour
+                    heapq.heappush(node_queue, Node(neigh, neigh_distance, neigh_path)) # add the new neighbor to heap with new parent and distance
 
         return []
 
     def manhattanHeuristics(self, xy1:Coordinates, xy2:Coordinates):
         "Returns the Manhattan distance between points xy1 and xy2"
         return abs(xy1.getRow() - xy2.getRow()) + abs(xy1.getCol() - xy2.getCol())
-

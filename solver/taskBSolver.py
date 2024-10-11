@@ -18,9 +18,9 @@ from math import inf
 class Node:
     """Node Object defining a node with its distance from starting point"""
     def __init__(self, node, path_to_node, distance_to_node=0):
-        self.node = node
-        self.path = path_to_node
-        self.distance = distance_to_node
+        self.node = node                    # co-ordinates of the node
+        self.path = path_to_node            # path to this node
+        self.distance = distance_to_node    # total distance to this node
 
 
 class bruteForceSolver():
@@ -73,7 +73,7 @@ class bruteForceSolver():
                 self.all_solved = True
 
         except Exception as e:
-            print("Invalid input configuration. No paths generated!")
+            print("Invalid input configuration. No paths generated!", str(e))
 
     def getSolverPath(self) -> dict:
         return self.entrance_exit_paths
@@ -99,7 +99,8 @@ class bruteForceSolver():
 
         Time complexity:
         ----------------
-            E(log V) -> for V - vertices & E - Edges
+            The worst case scenario where there are no paths
+            O(n) = VE => V:vertices, E:Edge
         """
         possible_paths = list()
         stack = [Node(entrance,[entrance],0)]                            # Node(node, path_to_node, distance_to_node)
