@@ -3,12 +3,12 @@
     "colNum": 10,
     "weight": "checkered",
     "entrances": [[4,-1],[10, 6]],
-    "exits": [[5, 10], [8,10]],
+    "exits": [[6, 10], [3,10]],
     "generator": "kruskal",
     "solver": "dijkstra",
-    "strategy": "brute-force",
+    "strategy": "greedy",
     "visualise": true,
-    "mazeFromFile": true,
+    "mazeFromFile": false,
     "mazeFileName": "maze_10x10.txt",
-    "fileOutput": "Output/B_NonOverlapping.png"
+    "fileOutput": "Output/C_M10_Overlapping.png"
 }

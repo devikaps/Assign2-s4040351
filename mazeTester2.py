@@ -18,6 +18,7 @@ from typing import List
 from maze.util import Coordinates
 from maze.maze import Maze
 
+from reader.mazeReader import MazeReader
 from generator.mazeGenerator import MazeGenerator
 from solver.mazeSolver import MazeSolver
 
@@ -45,7 +46,7 @@ def usage():
 
 	# On Teaching servers, use 'python3'
 	# On Windows, you may need to use 'python' instead of 'python3' to get this to work
-	print('python3 mazeTester2.py', '<configuration file>')
+	print('python mazeTester2.py', '<configuration file>')
 	sys.exit(1)
 
 
@@ -69,15 +70,17 @@ if __name__ == '__main__':
 
 
 		# Assign to variables storing various parameters.
+
+		# row, col, exit and entrance of the maze
 		rowNum: int = configDict['rowNum']
 		colNum: int = configDict['colNum']
-		wtApproach: str = configDict['weight']
-		# set of entrances
 		entrances: List[List[int]] = configDict['entrances']
-		# set of exits
 		exits: List[List[int]] = configDict['exits']
+
+		wtApproach: str = configDict['weight']
 		# generator approach to use
 		genApproach: str = configDict['generator']
+
 		# solver approach to use
 		solverApproach: str = configDict['solver']
 		# Optional: The index of which entrance to use (start at index 0)
@@ -88,6 +91,17 @@ if __name__ == '__main__':
 		else:
 			allPairStrategy = configDict['strategy']
 			multiPath  = True
+
+		# whether to create the maze from a text file rather than calling
+		# a maze generator.
+
+		if 'mazeFromFile' not in configDict.keys():
+			print ('Warning! This version of mazeTester has been updated\
+		  			to support reading mazes from files. Please check your config file.')
+			usage()
+
+		fileMaze: bool = configDict['mazeFromFile']
+
 		# whether to visualise the generated maze and solving solution or not
 		bVisualise: bool = configDict['visualise']
 		# Optional: Filename to store visualisation output
@@ -99,7 +113,6 @@ if __name__ == '__main__':
 		if 'randSeed' in configDict.keys():
 			randSeed = configDict['randSeed']
 
-
 		# initialise the random seed generator
 		if randSeed != None:
 			random.seed(randSeed)
@@ -109,7 +122,6 @@ if __name__ == '__main__':
 
 		maze: Maze = Maze(rowNum, colNum, wtApproach)
 
-
 		# add the entraces and exits
 		for [r,c] in entrances:
 			maze.addEntrance(Coordinates(r, c))
@@ -118,19 +130,24 @@ if __name__ == '__main__':
 
 
 
+		# reading the maze information from the file
+		if fileMaze:
+			mazeFileName = configDict['mazeFileName']
+			reader = MazeReader(mazeFileName)
+			reader.readMaze(maze)
+			isMazeGenerated = reader.isMazeGenerated()
+
 		# Generate maze
+		else:
+			generator = MazeGenerator(genApproach)
+			# timer for generation
+			startGenTime : float = time.perf_counter()
+			generator.generateMaze(maze)
+			isMazeGenerated = generator.isMazeGenerated()
+			# stop timer
+			endGenTime: float = time.perf_counter()
 
-		generator = MazeGenerator(genApproach)
-		# timer for generation
-		startGenTime : float = time.perf_counter()
-		generator.generateMaze(maze)
-
-
-		# stop timer
-		endGenTime: float = time.perf_counter()
-
-		print(f'Generation took {endGenTime - startGenTime:0.4f} seconds')
-
+			print(f'Generation took {endGenTime - startGenTime:0.4f} seconds')
 
 
 		mazeEntrances: List[Coordinates]  = maze.getEntrances()
@@ -141,7 +158,7 @@ if __name__ == '__main__':
 			print("Specified index of entrance that solver starts is out of bounds, {}".format(solverEntIndex))
 			usage()
 
-		if generator.isMazeGenerated():
+		if isMazeGenerated:
 
 			# time for solving
 			startSolveTime : float = time.perf_counter()
@@ -168,12 +185,12 @@ if __name__ == '__main__':
 			print(f'Solving took {endSolveTime - startSolveTime:0.4f} seconds')
 			# print('Solver used Entrance {entrance} and Exit {exit}.'.format(entrance=solver.getEntranceUsed(), exit=solver.getExitUsed()))
 		else:
-			print("Generator hasn't been implemented yet, hence solver wasn't called.")
+			print("Maze has not been generated or read properly from the file, hence solver wasn't called.")
 
 		print ("getting to visualisation!", canVisualise)
 		# # Display maze.
 
-		if bVisualise and canVisualise and generator.isMazeGenerated():
+		if bVisualise and canVisualise and isMazeGenerated:
 			cellSize = 1
 			visualiser = Visualizer(maze, solver, multiPath, cellSize)
 

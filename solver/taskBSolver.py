@@ -22,6 +22,8 @@ class Node:
         self.path = path_to_node            # path to this node
         self.distance = distance_to_node    # total distance to this node
 
+    def __lt__(self, a, b):
+        return True
 
 class bruteForceSolver():
 
@@ -48,11 +50,12 @@ class bruteForceSolver():
             for entrance, possible_path in possible_paths.items():              # explore the paths noted for all entrance-exit pairs
                 shortest_path = (list(), inf)                                   # (path,distance)
                 for path, distance in possible_path:                            # find the shortest path possible that is not overlapping
-                    isValid = True
+                    isValid = False
                     if shortest_path[1] < distance: continue                    # with any paths for other entrance-exit pairs
                     for other_entrance, path_list in possible_paths.items():
                         if other_entrance == entrance:                          # Do not check for the same entrance_exit paths
                             continue
+                        isValid = len(path_list) > 0
                         for other_path, _ in path_list:
                             if set(other_path).intersection(path):              # checking if there are commong nodes
                                 isValid = False                                 # mark as invalid if there are common nodes found

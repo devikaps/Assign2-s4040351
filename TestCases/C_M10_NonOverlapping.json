@@ -1,0 +1,14 @@
+{
+    "rowNum": 10,
+    "colNum": 10,
+    "weight": "checkered",
+    "entrances": [[4,-1],[10, 6], [5,10]],
+    "exits": [[1, 10], [8,10],[8,-1]],
+    "generator": "kruskal",
+    "solver": "dijkstra",
+    "strategy": "greedy",
+    "visualise": true,
+    "mazeFromFile": false,
+    "mazeFileName": "maze_10x10.txt",
+    "fileOutput": "Output/C_M10_NonOverlapping.png"
+}
