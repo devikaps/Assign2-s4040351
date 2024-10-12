@@ -17,13 +17,14 @@ import heapq
 
 class Node:
     """Node Object defining a node with its distance from starting point"""
-    def __init__(self, node, distance, path=[]):
+    def __init__(self, node, distance, heuristic, path=[]):
         self.node = node            # co-ordinates of the node
         self.distance = distance    # total distance to this node
+        self.heuristic= heuristic   # total distance to this node
         self.path = path            # path to this node
 
     def __lt__(self, node):         # overwriting the less-than method for this class
-        return self.distance < node.distance
+        return self.heuristic < node.heuristic
 
 
 class greedySolver():
@@ -43,13 +44,18 @@ class greedySolver():
         # TODO: Implement this for task C!
         try:
             exclude_paths = list()
+            path_cost = list()
             for index in range(0, len(entrances)):
                 path_found = self.findPath(maze, entrances[index], exits[index], exclude_paths)
                 if path_found:
-                    self.entrance_exit_paths.update({index: path_found})
-                    exclude_paths.extend(path_found)
+                    self.entrance_exit_paths.update({index: path_found[0]})
+                    exclude_paths.extend(path_found[0])
+                    path_cost.append(path_found[1])
 
             self.all_solved = (len(self.entrance_exit_paths) == len(entrances))
+            if self.all_solved:
+                for index in range(0, len(entrances)):
+                    print(f"Entrance-Exit-Pair: {index+1}\t Path Cost:{path_cost[index]}")
         except Exception as e:
             print("Invalid Input Configuration. No paths generated!", str(e))
 
@@ -98,25 +104,26 @@ class greedySolver():
         """
         node_queue = list()                                   # use heap to implement priority Queue
         heapq.heapify(node_queue)
-        heapq.heappush(node_queue, Node(entrance, 0, [entrance])) # initialize heap with first node as entrance at index
-
+        heapq.heappush(node_queue, Node(entrance, 0, 0, [entrance])) # initialize heap with first node as entrance at index
         visited = dict()
+
         while node_queue:
             selected =  heapq.heappop(node_queue)             # fetch the node with shortest distance
             visited.update({selected.node : selected})        # Add this selected node to visited list
 
             if selected.node == exit:                         # check if this is the exit
-                return selected.path                          # return True if the path length is greater than 1
+                return (selected.path, selected.distance)     # return True if the path length is greater than 1
 
             nonVisitedNeighs = [(neigh, getCellWeight(neigh, selected.node, maze)) for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh) and neigh not in exclude_path]
 
-            for neigh, distance in nonVisitedNeighs:                    # explore all paths that are not in exclusion list and is not a wall
-                neigh_distance = distance + selected.distance + self.manhattanHeuristics(exit, selected.node) # get manhattan distance from selected to exit
+            for neigh, distance in nonVisitedNeighs:
+                neigh_distance = distance + selected.distance
+                neigh_heuristic = self.manhattanHeuristics(exit, selected.node)          # get manhattan distance from selected to exit
 
-                if (neigh not in visited or neigh_distance < visited[neigh].distance): # the new neighbor was not visited or has a new shorted distance
+                if (neigh not in visited or neigh_heuristic < visited[neigh].heuristic): # the new neighbor was not visited or has a new shorted distance
                     neigh_path = [neigh]
-                    neigh_path.extend(selected.path)                                    # find the path towards this neighbour
-                    heapq.heappush(node_queue, Node(neigh, neigh_distance, neigh_path)) # add the new neighbor to heap with new parent and distance
+                    neigh_path.extend(selected.path)                                     # find the path towards this neighbour
+                    heapq.heappush(node_queue, Node(neigh, neigh_distance, neigh_heuristic, neigh_path)) # add the new neighbor to heap with new parent and distance
 
         return []
 
