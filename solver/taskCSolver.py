@@ -108,10 +108,10 @@ class greedySolver():
             if selected.node == exit:                         # check if this is the exit
                 return selected.path                          # return True if the path length is greater than 1
 
-            nonVisitedNeighs = [neigh for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh) and neigh not in exclude_path]
+            nonVisitedNeighs = [(neigh, getCellWeight(neigh, selected.node, maze)) for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh) and neigh not in exclude_path]
 
-            for neigh in nonVisitedNeighs:                    # explore all paths that are not in exclusion list and is not a wall
-                neigh_distance = selected.distance + self.manhattanHeuristics(exit, selected.node) # get manhattan distance from selected to exit
+            for neigh, distance in nonVisitedNeighs:                    # explore all paths that are not in exclusion list and is not a wall
+                neigh_distance = distance + selected.distance + self.manhattanHeuristics(exit, selected.node) # get manhattan distance from selected to exit
 
                 if (neigh not in visited or neigh_distance < visited[neigh].distance): # the new neighbor was not visited or has a new shorted distance
                     neigh_path = [neigh]
@@ -123,3 +123,15 @@ class greedySolver():
     def manhattanHeuristics(self, xy1:Coordinates, xy2:Coordinates):
         "Returns the Manhattan distance between points xy1 and xy2"
         return abs(xy1.getRow() - xy2.getRow()) + abs(xy1.getCol() - xy2.getCol())
+
+
+# Added since the file based maze creations was not returning the proper distance
+# since the vertices were not proper while taking weightage
+def getCoordinate(vert: Coordinates, maze: Maze):
+   vertices = maze.getVetrices()
+   for vertex in vertices:
+      if vertex == vert:
+         return vertex
+
+def getCellWeight(vert1: Coordinates, vert2: Coordinates, maze: Maze):
+   return maze.edgeWeight(getCoordinate(vert1,maze), getCoordinate(vert2,maze))

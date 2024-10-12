@@ -87,10 +87,10 @@ class DijkstraSolver():
                     return
 
                 self.m_cellsExplored += 1                             # increment explored nodes count
-                nonVisitedNeighs = [neigh for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh)] # Explore the neighbors
+                nonVisitedNeighs = [(neigh, getCellWeight(neigh, selected.node, maze)) for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh)] # Explore the neighbors
 
-                for neigh in nonVisitedNeighs:                         # process all edges that are not walls
-                    neigh_distance = selected.distance + maze.edgeWeight(neigh,selected.node) # (ditance to neighbor + the parents distance from starting node)
+                for neigh, distance in nonVisitedNeighs:                         # process all edges that are not walls
+                    neigh_distance = distance + selected.distance                # (ditance to neighbor + the parents distance from starting node)
                     if (neigh not in visited or neigh_distance < visited[neigh].distance):    # If not visited or has a new shorter distance
                         neigh_path = [neigh]
                         neigh_path.extend(selected.path)
@@ -98,3 +98,14 @@ class DijkstraSolver():
 
         except Exception as e:
             print("Invalid Configuration! Exisitng process..........",str(e))
+
+# Added since the file based maze creations was not returning the proper distance
+# since the vertices were not proper while taking weightage
+def getCoordinate(vert: Coordinates, maze: Maze):
+   vertices = maze.getVetrices()
+   for vertex in vertices:
+      if vertex == vert:
+         return vertex
+
+def getCellWeight(vert1: Coordinates, vert2: Coordinates, maze: Maze):
+   return maze.edgeWeight(getCoordinate(vert1,maze), getCoordinate(vert2,maze))

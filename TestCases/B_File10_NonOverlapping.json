@@ -2,7 +2,7 @@
     "rowNum": 10,
     "colNum": 10,
     "weight": "checkered",
-    "entrances": [[4,-1],[10, 6],[5,10]],
+    "entrances": [[4,-1],[10, 6], [5,10]],
     "exits": [[1, 10], [8,10],[8,-1]],
     "generator": "kruskal",
     "solver": "dijkstra",

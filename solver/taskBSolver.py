@@ -13,6 +13,7 @@ from maze.maze import Maze
 from typing import List
 from solver.recurBackMazeSolver import RecurBackMazeSolver
 from math import inf
+import heapq
 
 
 class Node:
@@ -22,8 +23,8 @@ class Node:
         self.path = path_to_node            # path to this node
         self.distance = distance_to_node    # total distance to this node
 
-    def __lt__(self, a, b):
-        return True
+    def __lt__(self, node):
+        return True                         # normal FIFO queue with no priority
 
 class bruteForceSolver():
 
@@ -50,21 +51,17 @@ class bruteForceSolver():
             for entrance, possible_path in possible_paths.items():              # explore the paths noted for all entrance-exit pairs
                 shortest_path = (list(), inf)                                   # (path,distance)
                 for path, distance in possible_path:                            # find the shortest path possible that is not overlapping
-                    isValid = False
+                    isValid = (len(possible_paths) == 1)
                     if shortest_path[1] < distance: continue                    # with any paths for other entrance-exit pairs
                     for other_entrance, path_list in possible_paths.items():
                         if other_entrance == entrance:                          # Do not check for the same entrance_exit paths
                             continue
-                        isValid = len(path_list) > 0
                         for other_path, _ in path_list:
-                            if set(other_path).intersection(path):              # checking if there are commong nodes
-                                isValid = False                                 # mark as invalid if there are common nodes found
-                                break
-                        if not isValid:
-                            break                                               # no need to check for any other path combinations
-
+                            if not set(other_path).intersection(path):          # checking if there are commong nodes
+                                isValid = True                                  # mark as invalid if there are common nodes found
                     if isValid:
                         shortest_path = (path, distance)
+                        break
 
                 if shortest_path: solved_paths.append(shortest_path[0])        # get the shorted possible non-overlapping path
 
@@ -106,22 +103,37 @@ class bruteForceSolver():
             O(n) = VE => V:vertices, E:Edge
         """
         possible_paths = list()
-        stack = [Node(entrance,[entrance],0)]                            # Node(node, path_to_node, distance_to_node)
-        visited = dict()                                                 # empty the visited list
-        while stack:
-            selected =  stack.pop()                                      # FIFO order fetch for next node, to process in the next fetched node
+        node_list = [Node(entrance,[entrance],0)]                            # Node(node, path_to_node, distance_to_node)
+        visited = dict()                                                     # empty the visited list
+        exclusions = list()
+        while node_list and not set(visited).intersection(set(maze.getEdges())) :
+            selected =  node_list.pop(0)                                # FIFO order fetch for next node, to process in the next fetched node
             visited.update({selected.node : selected})                   # Add the processing node to visited list
 
             if selected.node == exit:                                    # if the node is the expected exit
                 possible_paths.append((selected.path, selected.distance))# append the possible paths list with path to the exit
+                exclusions.extend(selected.path)
+                continue
 
             neighbours = maze.neighbours(selected.node)                  # Find neighbours that are NON-VISITED, NOT_EXPLORED, NOT_A_WALL
-            nonVisitedNeighs = [(neigh, maze.edgeWeight(selected.node, neigh)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited]
+            nonVisitedNeighs = [(neigh, getCellWeight(selected.node, neigh, maze)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited and neigh not in exclusions]
 
             for neigh, distance in nonVisitedNeighs:                     # process the nodes in their distance order
                 path = [neigh]
                 path.extend(selected.path)
-                neigh_node = Node(neigh, path, distance + selected.distance)
-                stack.append(neigh_node)                                 # push the neighbour node for processing
+                total_distance = selected.distance + distance
+                neigh_node = Node(neigh, path, total_distance)
+                node_list.append(neigh_node)                    # push the neighbour node for processing
 
         return possible_paths                                            # return the multiple paths found
+
+# Added since the file based maze creations was not returning the proper distance
+# since the vertices were not proper while taking weightage
+def getCoordinate(vert: Coordinates, maze: Maze):
+   vertices = maze.getVetrices()
+   for vertex in vertices:
+      if vertex == vert:
+         return vertex
+
+def getCellWeight(vert1: Coordinates, vert2: Coordinates, maze: Maze):
+   return maze.edgeWeight(getCoordinate(vert1,maze), getCoordinate(vert2,maze))
