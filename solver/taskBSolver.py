@@ -13,18 +13,19 @@ from maze.maze import Maze
 from typing import List
 from solver.recurBackMazeSolver import RecurBackMazeSolver
 from math import inf
-import heapq
 
 
 class Node:
     """Node Object defining a node with its distance from starting point"""
-    def __init__(self, node, path_to_node, distance_to_node=0):
+    def __init__(self, node, path_to_node, distance_to_node=0, path_depth=0):
         self.node = node                    # co-ordinates of the node
         self.path = path_to_node            # path to this node
         self.distance = distance_to_node    # total distance to this node
+        self.path_depth = path_depth    # total distance to this node
 
     def __lt__(self, node):
         return True                         # normal FIFO queue with no priority
+
 
 class bruteForceSolver():
 
@@ -47,25 +48,33 @@ class bruteForceSolver():
             for entrance_index in range(0, len(entrances)):
                 possible_paths.update({entrance_index: self.findPath(maze, entrances[entrance_index], exits[entrance_index])})
 
+            # finding the non-overlapping paths
             solved_paths = list()
-            for entrance, possible_path in possible_paths.items():              # explore the paths noted for all entrance-exit pairs
+            for entrance, possible_path in possible_paths.items():              # explore the paths from BFS for all entrance-exit pairs
+                shortest_path = (list(), inf)                                   # (path,distance) tuple
 
-                shortest_path = (list(), inf)                                   # (path,distance)
+                isValid = (len(possible_paths) == 1)                        # sets True when only one entrance-exit pair
                 for path, distance in possible_path:                            # find the shortest path possible that is not overlapping
-                    isValid = (len(possible_paths) == 1)                        # exit when only one entrance-exit pair
-                    if shortest_path[1] < distance: continue                    # with any paths for other entrance-exit pairs
+
+                    if shortest_path[1] < distance: continue                    # filtering shortest distance options
+
                     for other_entrance, path_list in possible_paths.items():
                         if other_entrance == entrance:                          # Do not check for the same entrance_exit paths
                             continue
+
+                        isValid = False
                         for other_path, _ in path_list:
-                            if not set(other_path).intersection(path):          # checking if there are commong nodes
+                            if not set(other_path).intersection(path):
                                 isValid = True                                  # mark as invalid if there are common nodes found
+                                print("found")
                                 break
+                        print(f"checked {entrance} {other_entrance} {isValid}")
+
                     if isValid:
                         shortest_path = (entrance, path, distance, len(possible_path))
                         break
 
-                if shortest_path: solved_paths.append(shortest_path)        # get the shorted possible non-overlapping path
+                if isValid: solved_paths.append(shortest_path)        # get the shorted possible non-overlapping path
 
             if len(solved_paths) == len(entrances):
                 for entrance, solved_path, distance, total_paths in solved_paths:
@@ -73,8 +82,8 @@ class bruteForceSolver():
                     self.entrance_exit_paths.update({entrance: solved_path})      # Set the final best paths if found and mark as solved
                 self.all_solved = True
 
-        except Exception as e:
-            print("Invalid input configuration. No paths generated!", str(e))
+        except IndentationError as e:
+            print("No paths generated !!!", str(e))
 
     def getSolverPath(self) -> dict:
         return self.entrance_exit_paths
@@ -105,24 +114,26 @@ class bruteForceSolver():
             O(n) = VE => V:vertices, E:Edge
         """
         possible_paths = list()
-        node_list = [Node(entrance,[entrance],0)]                        # Node(node, path_to_node, distance_to_node)
+        node_list = [Node(entrance,[entrance],0, 0)]                        # Node(node, path_to_node, distance_to_node)
         visited = dict()                                                 # empty the visited list
+        dlimit = maze.colNum() + maze.rowNum()
         while node_list:
             selected =  node_list.pop(0)                                 # FIFO order fetch for next node
-            visited.update({selected.node : selected})                   # Add the processing node to visited list
+            if selected.path_depth >= dlimit: continue
+            visited = selected.path                                      # Add the processing node to visited list
 
             if selected.node == exit:                                    # if the node is the expected exit
                 possible_paths.append((selected.path, selected.distance))# append the possible paths to exit node
                 continue
 
             neighbours = maze.neighbours(selected.node)                  # Find neighbours that are NON-VISITED & NOT_A_WALL
-            nonVisitedNeighs = [(neigh, getCellWeight(selected.node, neigh, maze)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited]
+            nonVisitedNeighs = [(neigh, getCellWeight(selected.node, neigh, maze)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited ]
 
             for neigh, distance in nonVisitedNeighs:                     # push neighbours to queue
                 path = [neigh]
                 path.extend(selected.path)
                 total_distance = selected.distance + distance
-                neigh_node = Node(neigh, path, total_distance)
+                neigh_node = Node(neigh, path, total_distance, selected.path_depth+1)
                 node_list.append(neigh_node)                             # push the neighbour node for processing
 
         return possible_paths                                            # return the multiple paths found
