@@ -6,7 +6,7 @@
     "exits": [[-1, 0], [3,5],[-1,4]],
     "generator": "kruskal",
     "solver": "dijkstra",
-    "strategy": "brute-force",
+    "strategy": "greedy",
     "visualise": true,
     "mazeFromFile": false,
     "mazeFileName": "maze_10x10.txt",

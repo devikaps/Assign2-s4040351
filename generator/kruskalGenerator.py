@@ -40,8 +40,11 @@ class KruskalMazeGenerator():
             - union-find
 
         Time complexity:
-            O(W) - W: Walls
-
+            The worst case where, all edges are valid to be removed walls and
+            the last two vertices are in two disjoint set's lowest child
+            In this case the union operation in UnionFind will take log V operations to join the sets
+            And with E no.of iterations the complexity would be:
+                O(E log V) - E: Walls, V: Vertices
         """
         # TODO: Implement this method for task A.
         walls = get_walls(maze)                         # step 2: fetch the sorted walls with their weights

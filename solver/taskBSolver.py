@@ -9,6 +9,7 @@
 
 from maze.util import Coordinates
 from maze.maze import Maze
+from collections import deque
 
 from typing import List
 from solver.recurBackMazeSolver import RecurBackMazeSolver
@@ -17,14 +18,11 @@ from math import inf
 
 class Node:
     """Node Object defining a node with its distance from starting point"""
-    def __init__(self, node, path_to_node, distance_to_node=0, path_depth=0):
+    def __init__(self, node, path_to_node, distance_to_node=0):
         self.node = node                    # co-ordinates of the node
         self.path = path_to_node            # path to this node
         self.distance = distance_to_node    # total distance to this node
-        self.path_depth = path_depth    # total distance to this node
 
-    def __lt__(self, node):
-        return True                         # normal FIFO queue with no priority
 
 
 class bruteForceSolver():
@@ -51,12 +49,12 @@ class bruteForceSolver():
             # finding the non-overlapping paths
             solved_paths = list()
             for entrance, possible_path in possible_paths.items():              # explore the paths from BFS for all entrance-exit pairs
-                shortest_path = (list(), inf)                                   # (path,distance) tuple
+                shortest_path = (entrance, list(), inf, inf)                                   # (path,distance) tuple
 
                 isValid = (len(possible_paths) == 1)                        # sets True when only one entrance-exit pair
                 for path, distance in possible_path:                            # find the shortest path possible that is not overlapping
 
-                    if shortest_path[1] < distance: continue                    # filtering shortest distance options
+                    if shortest_path[2] < distance: continue                    # filtering shortest distance options
 
                     for other_entrance, path_list in possible_paths.items():
                         if other_entrance == entrance:                          # Do not check for the same entrance_exit paths
@@ -66,13 +64,10 @@ class bruteForceSolver():
                         for other_path, _ in path_list:
                             if not set(other_path).intersection(path):
                                 isValid = True                                  # mark as invalid if there are common nodes found
-                                print("found")
                                 break
-                        print(f"checked {entrance} {other_entrance} {isValid}")
 
                     if isValid:
-                        shortest_path = (entrance, path, distance, len(possible_path))
-                        break
+                        shortest_path = (entrance, path, len(possible_path), len(possible_path))
 
                 if isValid: solved_paths.append(shortest_path)        # get the shorted possible non-overlapping path
 
@@ -89,7 +84,7 @@ class bruteForceSolver():
         return self.entrance_exit_paths
 
     def findPath(self, maze: Maze, entrance: Coordinates, exit: Coordinates):
-        """This function implements the Breadth First Search(BFS) is implemented as the Brute Force Algorithm here
+        """This function implements the Depth First Search(DFS) is implemented as the Brute Force Algorithm here
           Input:
                 maze - Class that provides the maze related details, including edge, edge-weight, walls, etc
                 entrance - the entrance co-ordinate
@@ -114,12 +109,11 @@ class bruteForceSolver():
             O(n) = VE => V:vertices, E:Edge
         """
         possible_paths = list()
-        node_list = [Node(entrance,[entrance],0, 0)]                        # Node(node, path_to_node, distance_to_node)
+        node_list : deque = deque()
+        node_list.append(Node(entrance,[entrance],0))                    # Node(node, path_to_node, distance_to_node)
         visited = dict()                                                 # empty the visited list
-        dlimit = maze.colNum() + maze.rowNum()
         while node_list:
-            selected =  node_list.pop(0)                                 # FIFO order fetch for next node
-            if selected.path_depth >= dlimit: continue
+            selected =  node_list.pop()                                  # LIFO order fetch for next node
             visited = selected.path                                      # Add the processing node to visited list
 
             if selected.node == exit:                                    # if the node is the expected exit
@@ -133,7 +127,7 @@ class bruteForceSolver():
                 path = [neigh]
                 path.extend(selected.path)
                 total_distance = selected.distance + distance
-                neigh_node = Node(neigh, path, total_distance, selected.path_depth+1)
+                neigh_node = Node(neigh, path, total_distance)
                 node_list.append(neigh_node)                             # push the neighbour node for processing
 
         return possible_paths                                            # return the multiple paths found

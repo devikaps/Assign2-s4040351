@@ -1,14 +1,14 @@
 {
-    "rowNum": 8,
-    "colNum": 8,
+    "rowNum": 9,
+    "colNum": 9,
     "weight": "checkered",
-    "entrances": [[4,-1],[8, 6], [4,8]],
-    "exits": [[1, 8], [7,8],[8,3]],
+    "entrances": [[4,-1],[9, 6], [4,9]],
+    "exits": [[1, 9], [8,9],[9,3]],
     "generator": "kruskal",
     "solver": "dijkstra",
     "strategy": "brute-force",
     "visualise": true,
     "mazeFromFile": false,
     "mazeFileName": "maze_10x10.txt",
-    "fileOutput": "Output/B_M8_NonOverlapping.png"
+    "fileOutput": "Output/B_M9_NonOverlapping.png"
 }
