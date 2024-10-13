@@ -48,28 +48,24 @@ class bruteForceSolver():
 
             # finding the non-overlapping paths
             solved_paths = list()
-            for entrance, possible_path in possible_paths.items():              # explore the paths from BFS for all entrance-exit pairs
-                shortest_path = (entrance, list(), inf, inf)                                   # (path,distance) tuple
-
-                isValid = (len(possible_paths) == 1)                        # sets True when only one entrance-exit pair
-                for path, distance in possible_path:                            # find the shortest path possible that is not overlapping
-
-                    if shortest_path[2] < distance: continue                    # filtering shortest distance options
-
+            for entrance, possible_path in possible_paths.items():                  # explore the paths from BFS for all entrance-exit pairs
+                shortest_path = (entrance, list(), inf, inf)                        # (path,distance) tuple
+                isValid = (len(possible_paths) == 1)                                # sets True when only one entrance-exit pair
+                for path, distance in possible_path:                                # find the shortest path possible that is not overlapping
+                    isValid = False
+                    if shortest_path[2] < distance: continue                        # filtering shortest distance options
                     for other_entrance, path_list in possible_paths.items():
-                        if other_entrance == entrance:                          # Do not check for the same entrance_exit paths
-                            continue
-
-                        isValid = False
-                        for other_path, _ in path_list:
+                        if other_entrance == entrance: continue                     # Do not check for the same entrance_exit paths
+                        for other_path, _ in path_list:                             # overlap checking with other entrances
                             if not set(other_path).intersection(path):
-                                isValid = True                                  # mark as invalid if there are common nodes found
+                                isValid = True                                      # mark as invalid if there are common nodes found
                                 break
 
-                    if isValid:
-                        shortest_path = (entrance, path, len(possible_path), len(possible_path))
+                        if isValid: break
+                    if isValid: # saving the current shortest non-overlapping path
+                        shortest_path = (entrance, path, distance, len(possible_path))
 
-                if isValid: solved_paths.append(shortest_path)        # get the shorted possible non-overlapping path
+                if shortest_path[2] < inf: solved_paths.append(shortest_path)        # get the shorted possible non-overlapping path
 
             if len(solved_paths) == len(entrances):
                 total_cost = 0
@@ -145,3 +141,8 @@ class bruteForceSolver():
 
     def getCellWeight(self, vert1: Coordinates, vert2: Coordinates, maze: Maze):
         return maze.edgeWeight(self.getCoordinate(vert1,maze), self.getCoordinate(vert2,maze))
+
+def print_path(path):
+    for p in path:
+        print(f"({p.getRow()}, {p.getCol()})", end=", ")
+    print("")
