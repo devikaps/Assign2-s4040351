@@ -14,7 +14,8 @@ from collections import deque
 from typing import List
 from solver.recurBackMazeSolver import RecurBackMazeSolver
 from math import inf
-
+from itertools import product
+from itertools import combinations
 
 class Node:
     """Node Object defining a node with its distance from starting point"""
@@ -46,38 +47,37 @@ class bruteForceSolver():
             for entrance_index in range(0, len(entrances)):
                 possible_paths.update({entrance_index: self.findPath(maze, entrances[entrance_index], exits[entrance_index])})
 
-            # finding the non-overlapping paths
-            solved_paths = list()
-            for entrance, possible_path in possible_paths.items():                  # explore the paths from BFS for all entrance-exit pairs
-                shortest_path = (entrance, list(), inf, inf)                        # (path,distance) tuple
-                isValid = (len(possible_paths) == 1)                                # sets True when only one entrance-exit pair
-                for path, distance in possible_path:                                # find the shortest path possible that is not overlapping
-                    isValid = False
-                    if shortest_path[2] < distance: continue                        # filtering shortest distance options
-                    for other_entrance, path_list in possible_paths.items():
-                        if other_entrance == entrance: continue                     # Do not check for the same entrance_exit paths
-                        for other_path, _ in path_list:                             # overlap checking with other entrances
-                            if not set(other_path).intersection(path):
-                                isValid = True                                      # mark as invalid if there are common nodes found
-                                break
+            solved_paths = []
+            path_combinations = product(*possible_paths.values())   # merge all possible combinations from the entrance-exit pairs
+            shortest_distane = inf
+            for combination in path_combinations:
+                distance = self.getPathCost(combination)            # a valid path cost is retutned if its not an overlapping path
+                if distance < shortest_distane:
+                    solved_paths = combination                      # set new shortest path as the solution
+                    shortest_distane = distance
 
-                        if isValid: break
-                    if isValid: # saving the current shortest non-overlapping path
-                        shortest_path = (entrance, path, distance, len(possible_path))
+            if len(solved_paths)> 0:
+                index = 0
+                for path, distance in solved_paths:
+                    self.entrance_exit_paths.update({index:path})
+                    print(f"Path {index} Cost: {distance}\tLength: {len(path)}")
+                    index += 1
 
-                if shortest_path[2] < inf: solved_paths.append(shortest_path)        # get the shorted possible non-overlapping path
-
-            if len(solved_paths) == len(entrances):
-                total_cost = 0
-                for entrance, solved_path, distance, total_paths in solved_paths:
-                    print(f"Entrance-Exit-Pair {entrance+1} - Path Cost: {distance}\tTotal Paths: {total_paths}")
-                    self.entrance_exit_paths.update({entrance: solved_path})      # Set the final best paths if found and mark as solved
-                    total_cost += distance
                 self.all_solved = True
-                print(f"Total Path Cost: {total_cost}")
 
         except IndentationError as e:
             print("No paths generated !!!", str(e))
+
+    def getPathCost(self, path_combination):
+        visited = []
+        total_distance = 0
+        for path, distance in path_combination:
+            if visited:
+                if set(visited).intersection(set(path)):
+                    return inf
+            total_distance += distance
+            visited.extend(path)
+        return total_distance
 
     def getSolverPath(self) -> dict:
         return self.entrance_exit_paths

@@ -56,7 +56,7 @@ class greedySolver():
             if self.all_solved:
                 total_cost = 0
                 for index in range(0, len(entrances)):
-                    print(f"Entrance-Exit-Pair: {index+1}\t Path Cost:{path_cost[index]}")
+                    print(f"Path {index+1} Cost:{path_cost[index]}\tLength: {len(self.entrance_exit_paths[index])}")
                     total_cost +=  path_cost[index]
                 print(f"Total Path Cost: {total_cost}")
         except Exception as e:
