@@ -1,14 +1,14 @@
 {
-    "rowNum": 5,
-    "colNum": 5,
+    "rowNum": 10,
+    "colNum": 10,
     "weight": "checkered",
-    "entrances": [[2,5],[5, 3]],
-    "exits": [[-1, 0], [1,5]],
+    "entrances": [[4,-1],[10, 6]],
+    "exits": [[6, 10], [3,10]],
     "generator": "kruskal",
     "solver": "dijkstra",
     "strategy": "greedy",
     "visualise": true,
     "mazeFromFile": false,
     "mazeFileName": "maze_10x10.txt",
-    "fileOutput": "Output/C_M5_Overlapping.png"
+    "fileOutput": "Output/G_M10_Overlapping.png"
 }

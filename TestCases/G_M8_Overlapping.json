@@ -1,0 +1,14 @@
+{
+    "rowNum": 8,
+    "colNum": 8,
+    "weight": "checkered",
+    "entrances": [[1,-1],[5, -1], [4,8]],
+    "exits": [[-1, 3], [8,3],[8,1]],
+    "generator": "kruskal",
+    "solver": "dijkstra",
+    "strategy": "greedy",
+    "visualise": true,
+    "mazeFromFile": false,
+    "mazeFileName": "maze_10x10.txt",
+    "fileOutput": "Output/G_M8_Overlapping.png"
+}

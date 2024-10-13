@@ -4,11 +4,11 @@
     "weight": "checkered",
     "entrances": [[4,-1],[9, 6], [5,9]],
     "exits": [[1, 9], [8,9],[8,-1]],
-    "generator": "kruskal",
-    "solver": "dijkstra",
-    "strategy": "greedy",
+    "generator": "recur",
+    "solver": "recur",
+    "strategy": "brute-force",
     "visualise": true,
     "mazeFromFile": true,
     "mazeFileName": "TestCases/maze_9x9.txt",
-    "fileOutput": "Output/C_File9_NonOverlapping.png"
+    "fileOutput": "Output/B_File9_NonOverlapping.png"
 }

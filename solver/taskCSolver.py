@@ -55,10 +55,14 @@ class greedySolver():
             self.all_solved = (len(self.entrance_exit_paths) == len(entrances))
             if self.all_solved:
                 total_cost = 0
+                total_len = 0
                 for index in range(0, len(entrances)):
-                    print(f"Path {index+1} Cost:{path_cost[index]}\tLength: {len(self.entrance_exit_paths[index])}")
+                    length = len(self.entrance_exit_paths[index])
+                    print(f"\tPath {index+1} Cost:{path_cost[index]}\tLength: {length}")
                     total_cost +=  path_cost[index]
-                print(f"Total Path Cost: {total_cost}")
+                    total_len +=  length
+                print("\t----------------------------")
+                print(f"\tTotal  Cost: {total_cost}\tLength: {total_len}")
         except Exception as e:
             print("Invalid Input Configuration. No paths generated!", str(e))
 

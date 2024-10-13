@@ -1,0 +1,13 @@
+{
+    "rowNum": 7,
+    "colNum": 7,
+    "weight": "checkered",
+    "entrances": [[1,-1],[5, -1], [2,7]],
+    "exits": [[-1, 3], [4,7],[7,5]],
+    "generator": "kruskal",
+    "solver": "dijkstra",
+    "strategy": "greedy",
+    "visualise": true,
+    "mazeFromFile": false,
+    "fileOutput": "Output/G_M7_NonOverlapping.png"
+}

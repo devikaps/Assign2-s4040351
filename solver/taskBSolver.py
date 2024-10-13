@@ -58,11 +58,17 @@ class bruteForceSolver():
 
             if len(solved_paths)> 0:
                 index = 0
+                total_cost = 0
+                total_length = 0
                 for path, distance in solved_paths:
                     self.entrance_exit_paths.update({index:path})
-                    print(f"Path {index} Cost: {distance}\tLength: {len(path)}")
+                    print(f"\tPath {index} Cost: {distance}\tLength: {len(path)}")
+                    total_cost += distance
+                    total_length += len(path)
                     index += 1
 
+                print("\t----------------------------")
+                print(f"\tTotal  Cost: {total_cost}\tLength: {total_length}")
                 self.all_solved = True
 
         except IndentationError as e:

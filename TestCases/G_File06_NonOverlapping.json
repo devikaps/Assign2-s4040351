@@ -6,9 +6,9 @@
     "exits": [[-1, 3], [1,6], [6,2]],
     "generator": "kruskal",
     "solver": "dijkstra",
-    "strategy": "brute-force",
+    "strategy": "greedy",
     "visualise": true,
     "mazeFromFile": true,
     "mazeFileName": "TestCases/maze_6x6.txt",
-    "fileOutput": "Output/B_File6_NonOverlapping.png"
+    "fileOutput": "Output/G_File6_NonOverlapping.png"
 }

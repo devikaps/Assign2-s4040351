@@ -1,0 +1,14 @@
+{
+    "rowNum": 8,
+    "colNum": 8,
+    "weight": "checkered",
+    "entrances": [[4,-1],[8, 6], [4,8]],
+    "exits": [[1, 8], [7,8],[8,3]],
+    "generator": "recur",
+    "solver": "recur",
+    "strategy": "greedy",
+    "visualise": true,
+    "mazeFromFile": false,
+    "mazeFileName": "maze_10x10.txt",
+    "fileOutput": "Output/G_M8_NonOverlapping.png"
+}

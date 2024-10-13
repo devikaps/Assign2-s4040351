@@ -1,0 +1,14 @@
+{
+    "rowNum": 10,
+    "colNum": 10,
+    "weight": "checkered",
+    "entrances": [[4,-1], [5,10],[10,5]],
+    "exits": [[1, 10],[8,-1],[8,10]],
+    "generator": "recur",
+    "solver": "recur",
+    "strategy": "brute-force",
+    "visualise": true,
+    "mazeFromFile": true,
+    "mazeFileName": "TestCases/maze_10x10.txt",
+    "fileOutput": "Output/B_File10_NonOverlapping.png"
+}
