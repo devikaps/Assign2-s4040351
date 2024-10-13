@@ -72,10 +72,13 @@ class bruteForceSolver():
                 if isValid: solved_paths.append(shortest_path)        # get the shorted possible non-overlapping path
 
             if len(solved_paths) == len(entrances):
+                total_cost = 0
                 for entrance, solved_path, distance, total_paths in solved_paths:
                     print(f"Entrance-Exit-Pair {entrance+1} - Path Cost: {distance}\tTotal Paths: {total_paths}")
                     self.entrance_exit_paths.update({entrance: solved_path})      # Set the final best paths if found and mark as solved
+                    total_cost += distance
                 self.all_solved = True
+                print(f"Total Path Cost: {total_cost}")
 
         except IndentationError as e:
             print("No paths generated !!!", str(e))
@@ -121,7 +124,7 @@ class bruteForceSolver():
                 continue
 
             neighbours = maze.neighbours(selected.node)                  # Find neighbours that are NON-VISITED & NOT_A_WALL
-            nonVisitedNeighs = [(neigh, getCellWeight(selected.node, neigh, maze)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited ]
+            nonVisitedNeighs = [(neigh, self.getCellWeight(selected.node, neigh, maze)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited ]
 
             for neigh, distance in nonVisitedNeighs:                     # push neighbours to queue
                 path = [neigh]
@@ -132,13 +135,13 @@ class bruteForceSolver():
 
         return possible_paths                                            # return the multiple paths found
 
-# Added since the file based maze creations was not returning the proper distance
-# since the vertices were not proper while taking weightage
-def getCoordinate(vert: Coordinates, maze: Maze):
-   vertices = maze.getVetrices()
-   for vertex in vertices:
-      if vertex == vert:
-         return vertex
+    # Added since the file based maze creations was not returning the proper distance
+    # since the vertices were not proper while taking weightage
+    def getCoordinate(self, vert: Coordinates, maze: Maze):
+        vertices = maze.getVetrices()
+        for vertex in vertices:
+            if vertex == vert:
+                return vertex
 
-def getCellWeight(vert1: Coordinates, vert2: Coordinates, maze: Maze):
-   return maze.edgeWeight(getCoordinate(vert1,maze), getCoordinate(vert2,maze))
+    def getCellWeight(self, vert1: Coordinates, vert2: Coordinates, maze: Maze):
+        return maze.edgeWeight(self.getCoordinate(vert1,maze), self.getCoordinate(vert2,maze))

@@ -54,8 +54,11 @@ class greedySolver():
 
             self.all_solved = (len(self.entrance_exit_paths) == len(entrances))
             if self.all_solved:
+                total_cost = 0
                 for index in range(0, len(entrances)):
                     print(f"Entrance-Exit-Pair: {index+1}\t Path Cost:{path_cost[index]}")
+                    total_cost +=  path_cost[index]
+                print(f"Total Path Cost: {total_cost}")
         except Exception as e:
             print("Invalid Input Configuration. No paths generated!", str(e))
 
@@ -114,7 +117,7 @@ class greedySolver():
             if selected.node == exit:                         # check if this is the exit
                 return (selected.path, selected.distance)     # return True if the path length is greater than 1
 
-            nonVisitedNeighs = [(neigh, getCellWeight(neigh, selected.node, maze)) for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh) and neigh not in exclude_path]
+            nonVisitedNeighs = [(neigh, self.getCellWeight(neigh, selected.node, maze)) for neigh in maze.neighbours(selected.node) if not maze.hasWall(selected.node, neigh) and neigh not in exclude_path]
 
             for neigh, distance in nonVisitedNeighs:
                 neigh_distance = distance + selected.distance
@@ -131,14 +134,13 @@ class greedySolver():
         "Returns the Manhattan distance between points xy1 and xy2"
         return abs(xy1.getRow() - xy2.getRow()) + abs(xy1.getCol() - xy2.getCol())
 
+    # Added since the file based maze creations was not returning the proper distance
+    # since the vertices were not proper while taking weightage
+    def getCoordinate(self, vert: Coordinates, maze: Maze):
+        vertices = maze.getVetrices()
+        for vertex in vertices:
+            if vertex == vert:
+                return vertex
 
-# Added since the file based maze creations was not returning the proper distance
-# since the vertices were not proper while taking weightage
-def getCoordinate(vert: Coordinates, maze: Maze):
-   vertices = maze.getVetrices()
-   for vertex in vertices:
-      if vertex == vert:
-         return vertex
-
-def getCellWeight(vert1: Coordinates, vert2: Coordinates, maze: Maze):
-   return maze.edgeWeight(getCoordinate(vert1,maze), getCoordinate(vert2,maze))
+    def getCellWeight(self, vert1: Coordinates, vert2: Coordinates, maze: Maze):
+        return maze.edgeWeight(self.getCoordinate(vert1,maze), self.getCoordinate(vert2,maze))
