@@ -126,7 +126,7 @@ class bruteForceSolver():
                 continue
 
             neighbours = maze.neighbours(selected.node)                  # Find neighbours that are NON-VISITED & NOT_A_WALL
-            nonVisitedNeighs = [(neigh, self.getCellWeight(selected.node, neigh, maze)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited ]
+            nonVisitedNeighs = [(neigh, maze.edgeWeight(selected.node, neigh)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited ]
 
             for neigh, distance in nonVisitedNeighs:                     # push neighbours to queue
                 path = [neigh]
@@ -136,19 +136,3 @@ class bruteForceSolver():
                 node_list.append(neigh_node)                             # push the neighbour node for processing
 
         return possible_paths                                            # return the multiple paths found
-
-    # Added since the file based maze creations was not returning the proper distance
-    # since the vertices were not proper while taking weightage
-    def getCoordinate(self, vert: Coordinates, maze: Maze):
-        vertices = maze.getVetrices()
-        for vertex in vertices:
-            if vertex == vert:
-                return vertex
-
-    def getCellWeight(self, vert1: Coordinates, vert2: Coordinates, maze: Maze):
-        return maze.edgeWeight(self.getCoordinate(vert1,maze), self.getCoordinate(vert2,maze))
-
-def print_path(path):
-    for p in path:
-        print(f"({p.getRow()}, {p.getCol()})", end=", ")
-    print("")

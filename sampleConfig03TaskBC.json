@@ -8,5 +8,6 @@
     "solver": "dijkstra",
     "strategy": "brute-force",
     "visualise": true,
+    "mazeFromFile": false,
     "fileOutput": "testTaskB.png"
 }

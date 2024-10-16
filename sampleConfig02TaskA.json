@@ -8,5 +8,6 @@
     "solver": "recur",
     "solverEntranceIndex": 0,
     "visualise": true,
+    "mazeFromFile": false,
     "fileOutput": "sampleTaskA-2.png"
 }

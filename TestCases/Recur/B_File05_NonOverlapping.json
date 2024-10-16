@@ -10,5 +10,5 @@
     "visualise": true,
     "mazeFromFile": true,
     "mazeFileName": "TestCases/maze_5x5.txt",
-    "fileOutput": "Output/B_File5_NonOverlapping.png"
+    "fileOutput": "Output/Recur_B_File5_NonOverlapping.png"
 }

@@ -56,31 +56,31 @@ class MazeReader():
                 if i % 2 == 0:
                     row = i // 2
                     for col in range(0, len(lineInfo), 2):
-                        m_weights[(row, col // 2)] = lineInfo[col]                      
+                        m_weights[(row, col // 2)] = lineInfo[col]
         return m_weights
 
     def update_cell_weights(self, maze, weights: dict):
         """
         Updates the weights of all cells in the maze using the provided weights dictionary.
-        
+
         :param weights: A dictionary containing the weights keyed by (row, column) tuples.
         """
-        for vertex in maze.getVetrices():  
+        for vertex in maze.getVetrices():
             row = vertex.getRow()
             col = vertex.getCol()
             if (row, col) in weights:
                 vertex.m_weight = weights[(row, col)]  # Directly setting the weight of the Coordinate object
-        
+
         print("Cell weights updated.")
 
     def update_cell_walls(self, maze, fname):
         """
-        Updates the walls of the maze based on the file input. 
+        Updates the walls of the maze based on the file input.
         """
         with open(fname, 'r') as file:
             for i, line in enumerate(file):
                 lineInfo = list(map(int, line.strip().split()))
-                
+
                 row = i // 2
                 # Odd lines represent wall statuses for vertical walls
                 if i % 2 == 0:
@@ -88,17 +88,24 @@ class MazeReader():
                     # Update the walls between cells
                     for col in range(len(walls)):
                         if walls[col] == 0:
-                            maze.removeWall(Coordinates(row, col), Coordinates(row, col + 1))
+                            # Retrieve existing Coordinates instances
+                            cell1 = maze.m_cells.get((row, col))
+                            cell2 = maze.m_cells.get((row, col + 1))
+                            if cell1 and cell2:
+                                maze.removeWall(cell1, cell2)
 
                 # Even lines represent horizontal walls
                 else:
                     walls = lineInfo
                     for col in range(len(walls)):
                         if walls[col] == 0:
-                            maze.removeWall(Coordinates(row, col), Coordinates(row + 1, col))
-        
+                            # Retrieve existing Coordinates instances
+                            cell1 = maze.m_cells.get((row, col))
+                            cell2 = maze.m_cells.get((row + 1, col))
+                            if cell1 and cell2:
+                                maze.removeWall(cell1, cell2)
+
         print("Cell walls updated.")
 
 
 
-	

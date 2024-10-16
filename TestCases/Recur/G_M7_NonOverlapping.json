@@ -9,5 +9,5 @@
     "strategy": "greedy",
     "visualise": true,
     "mazeFromFile": false,
-    "fileOutput": "Output/G_M7_NonOverlapping.png"
+    "fileOutput": "Output/Recur_G_M7_NonOverlapping.png"
 }
