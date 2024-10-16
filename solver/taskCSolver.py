@@ -11,7 +11,7 @@ from maze.util import Coordinates
 from maze.maze import Maze
 
 from typing import List
-from solver.dijkstraSolver import DijkstraSolver
+# from solver.dijkstraSolver import DijkstraSolver
 import heapq
 
 

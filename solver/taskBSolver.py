@@ -12,10 +12,9 @@ from maze.maze import Maze
 from collections import deque
 
 from typing import List
-from solver.recurBackMazeSolver import RecurBackMazeSolver
+# from solver.recurBackMazeSolver import RecurBackMazeSolver
 from math import inf
 from itertools import product
-from itertools import combinations
 
 class Node:
     """Node Object defining a node with its distance from starting point"""
@@ -40,6 +39,10 @@ class bruteForceSolver():
         2.	Find the possibility of a path that does not overlap with the possible paths for another entrance-exit pairs
         3.	The process return boolean TRUE with the shortest non-overlapping if successful
         4.	If not successful, it returns boolean FALSE
+
+        The overall time complexity will ne O(V^E) as the possible path finding operations
+        takes the biggest time complexity compares to finding the best non-overlapping path
+        from all combinations.
         """
         try:
             # Fetch all possible paths
@@ -110,8 +113,14 @@ class bruteForceSolver():
         Time complexity:
         ----------------
             The worst case scenario where there are no paths
-            with entrance-exit pairs are placed diagonally
-            O(n) = VE => V:vertices, E:Edge
+            with entrance-exit pairs are placed diagonally, so each vertext will
+            iterate throuhg all the neighbours that must have already been visited
+            through for another path.
+
+            So the overall complexity will be an exponential with all vertices
+            visiting their edges multiple times.s
+
+            O(n) = V^E => V:vertices, E:Edge
         """
         possible_paths = list()
         node_list : deque = deque()
