@@ -5,9 +5,9 @@
     "entrances": [[4,-1],[10, 6]],
     "exits": [[-1,8]],
     "generator": "kruskal",
-    "solver": "dijkstra",
+    "solver": "recur",
     "solverEntranceIndex": 0,
     "visualise": true,
     "mazeFromFile": false,
-    "fileOutput": "sampleTaskA-recGen&Solver-checkered2.png"
+    "fileOutput": "sampleTaskA-kruskal&recSolver-checkered2.png"
 }

@@ -50,6 +50,7 @@ class bruteForceSolver():
             for entrance_index in range(0, len(entrances)):
                 possible_paths.update({entrance_index: self.findPath(maze, entrances[entrance_index], exits[entrance_index])})
 
+            # cartesian product formation and finding best path
             solved_paths = []
             path_combinations = product(*possible_paths.values())   # merge all possible combinations from the entrance-exit pairs
             shortest_distane = inf
@@ -59,6 +60,7 @@ class bruteForceSolver():
                     solved_paths = combination                      # set new shortest path as the solution
                     shortest_distane = distance
 
+            # returning solution details
             if len(solved_paths)> 0:
                 index = 0
                 total_cost = 0
@@ -131,17 +133,26 @@ class bruteForceSolver():
             visited = selected.path                                      # Add the processing node to visited list
 
             if selected.node == exit:                                    # if the node is the expected exit
-                possible_paths.append((selected.path, selected.distance))# append the possible paths to exit node
+                if self.notTracked(selected.path, possible_paths):
+                    possible_paths.append((selected.path, selected.distance))# append the possible paths to exit node
                 continue
 
             neighbours = maze.neighbours(selected.node)                  # Find neighbours that are NON-VISITED & NOT_A_WALL
             nonVisitedNeighs = [(neigh, maze.edgeWeight(selected.node, neigh)) for neigh in neighbours if not maze.hasWall(selected.node, neigh) and neigh not in visited ]
 
             for neigh, distance in nonVisitedNeighs:                     # push neighbours to queue
-                path = [neigh]
-                path.extend(selected.path)
+                new_path = selected.path + [neigh]
                 total_distance = selected.distance + distance
-                neigh_node = Node(neigh, path, total_distance)
+                neigh_node = Node(neigh, new_path, total_distance)
                 node_list.append(neigh_node)                             # push the neighbour node for processing
 
         return possible_paths                                            # return the multiple paths found
+
+
+    # checking already tracked nodes for the paths resolved in the current pair
+    def notTracked(self, new_path, path_list):
+        for path, _ in path_list:
+            isTracked = [ True if node in new_path else False for node in path ]
+            if all(isTracked):
+                return False # return false if any of the paths are same as the new one
+        return True

@@ -2,12 +2,12 @@
     "rowNum": 10,
     "colNum": 10,
     "weight": "checkered",
-    "entrances": [[0,-1], [-1, 5]],
-    "exits": [[9,-1]],
+    "entrances": [[4,-1],[10, 6]],
+    "exits": [[-1,8]],
     "generator": "kruskal",
-    "solver": "recur",
+    "solver": "dijkstra",
     "solverEntranceIndex": 0,
     "visualise": true,
     "mazeFromFile": false,
-    "fileOutput": "test.png"
+    "fileOutput": "sampleTaskA-kruskal&dijkstraSolver-checkered2.png"
 }

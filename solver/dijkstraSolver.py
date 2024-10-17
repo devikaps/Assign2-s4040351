@@ -92,8 +92,7 @@ class DijkstraSolver():
                 for neigh, distance in nonVisitedNeighs:                         # process all edges that are not walls
                     neigh_distance = distance + selected.distance                # (ditance to neighbor + the parents distance from starting node)
                     if (neigh not in visited or neigh_distance < visited[neigh].distance):    # If not visited or has a new shorter distance
-                        neigh_path = [neigh]
-                        neigh_path.extend(selected.path)
+                        neigh_path = selected.path + [neigh]
                         heapq.heappush(node_queue, Node(neigh, neigh_distance, neigh_path)) # add it to queue for (re-)processng
 
         except Exception as e:

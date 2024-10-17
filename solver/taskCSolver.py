@@ -130,8 +130,7 @@ class greedySolver():
                 neigh_heuristic = self.manhattanHeuristics(exit, selected.node)          # get manhattan distance from selected to exit
 
                 if (neigh not in visited or neigh_heuristic < visited[neigh].heuristic): # the new neighbor was not visited or has a new shorted distance
-                    neigh_path = [neigh]
-                    neigh_path.extend(selected.path)                                     # find the path towards this neighbour
+                    neigh_path = selected.path + [neigh]
                     heapq.heappush(node_queue, Node(neigh, neigh_distance, neigh_heuristic, neigh_path)) # add the new neighbor to heap with new parent and distance
 
         return []

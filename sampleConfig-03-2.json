@@ -1,0 +1,14 @@
+{
+    "rowNum": 6,
+    "colNum": 7,
+    "weight": "checkered",
+    "entrances": [[1,-1],[2,-1],[4,-1]],
+    "exits": [[1,7], [2,7], [4,7]],
+    "generator": "recur",
+    "solver": "recur",
+    "strategy": "brute-force",
+    "mazeFromFile": true,
+    "mazeFileName": "sampleMaze03.txt",
+    "visualise": true,
+    "fileOutput": "testTaskB-Maze3-3Pairs.png"
+}
