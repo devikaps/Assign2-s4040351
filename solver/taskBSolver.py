@@ -133,7 +133,7 @@ class bruteForceSolver():
             visited = selected.path                                      # Add the processing node to visited list
 
             if selected.node == exit:                                    # if the node is the expected exit
-                if self.notTracked(selected.path, possible_paths):
+                if self.isNotDuplicate(selected.path, possible_paths):
                     possible_paths.append((selected.path, selected.distance))# append the possible paths to exit node
                 continue
 
@@ -150,7 +150,7 @@ class bruteForceSolver():
 
 
     # checking already tracked nodes for the paths resolved in the current pair
-    def notTracked(self, new_path, path_list):
+    def isNotDuplicate(self, new_path, path_list):
         for path, _ in path_list:
             isTracked = [ True if node in new_path else False for node in path ]
             if all(isTracked):
